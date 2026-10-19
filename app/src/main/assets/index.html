@@ -26,6 +26,7 @@
   blockquote .en { display:block; margin-top:8px; font-size:.9em; font-style:italic; color:var(--muted); }
   html[lang=hi] blockquote .en { display:none; }
   blockquote cite { display:block; margin-top:6px; font-size:.85em; color:var(--muted); font-style:normal; }
+  .share { display:block; margin:8px 0 0 auto; background:none; color:var(--accent); border:1px solid var(--accent); border-radius:14px; padding:3px 12px; font-size:.8em; }
   table { width:100%; border-collapse:collapse; }
   td { padding:6px 4px; border-bottom:1px solid rgba(128,128,128,.25); vertical-align:top; }
   td:first-child { color:var(--accent); font-weight:bold; width:4.5em; }
@@ -115,6 +116,23 @@
   function toggleLang() {
     setLang(document.documentElement.lang === 'hi' ? 'en' : 'hi');
   }
+  function shareQuote(q) {
+    var lang = document.documentElement.lang, lines = '';
+    for (var n = q.firstChild; n && (n.nodeType === 3 || n.nodeName === 'BR'); n = n.nextSibling)
+      lines += n.nodeType === 3 ? n.textContent : '\n';
+    var text = lines;
+    if (lang === 'en') text += '\n\n' + q.querySelector(':scope > .en').textContent;
+    text += '\n' + q.querySelector('cite .' + lang).textContent +
+      (lang === 'en' ? ", Ramdhari Singh 'Dinkar'" : ", रामधारी सिंह 'दिनकर'");
+    Android.share(text);
+  }
+  document.querySelectorAll('blockquote').forEach(function (q) {
+    var b = document.createElement('button');
+    b.className = 'share';
+    b.innerHTML = '<span class="hi">साझा करें</span><span class="en">Share</span>';
+    b.onclick = function () { shareQuote(q); };
+    q.appendChild(b);
+  });
   try { if (localStorage.getItem('lang') === 'en') setLang('en'); } catch (e) {}
 </script>
 </body>

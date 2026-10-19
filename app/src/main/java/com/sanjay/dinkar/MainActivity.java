@@ -1,7 +1,9 @@
 package com.sanjay.dinkar;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
 public class MainActivity extends Activity {
@@ -13,8 +15,17 @@ public class MainActivity extends Activity {
         web = new WebView(this);
         web.getSettings().setJavaScriptEnabled(true);
         web.getSettings().setDomStorageEnabled(true);
+        web.addJavascriptInterface(this, "Android");
         setContentView(web);
         web.loadUrl("file:///android_asset/index.html");
+    }
+
+    @JavascriptInterface
+    public void share(String text) {
+        Intent send = new Intent(Intent.ACTION_SEND);
+        send.setType("text/plain");
+        send.putExtra(Intent.EXTRA_TEXT, text);
+        startActivity(Intent.createChooser(send, null));
     }
 
     @Override
