@@ -10,13 +10,27 @@ android {
         applicationId "com.sanjay.dinkar"
         minSdk 21
         targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
+    }
+
+    signingConfigs {
+        release {
+            if (project.hasProperty('DINKAR_STORE_FILE')) {
+                storeFile file(DINKAR_STORE_FILE)
+                storePassword DINKAR_STORE_PASSWORD
+                keyAlias DINKAR_KEY_ALIAS
+                keyPassword DINKAR_KEY_PASSWORD
+            }
+        }
     }
 
     buildTypes {
         release {
             minifyEnabled false
+            if (project.hasProperty('DINKAR_STORE_FILE')) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 
